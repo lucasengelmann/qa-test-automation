@@ -1,0 +1,21 @@
+{
+  "name": "qa-test-project",
+  "version": "1.0.0",
+  "description": "Complete QA automation project with Playwright, Cucumber, Postman, K6, and CI/CD",
+  "scripts": {
+    "test:e2e": "cucumber-js",
+    "test:e2e:headed": "HEADLESS=false cucumber-js",
+    "test:api": "newman run postman/collections/api-tests-collection.json",
+    "test:performance": "k6 run k6/tests/load-test.js",
+    "test:all": "npm run test:api && npm run test:e2e && npm run test:performance"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.9.0",
+    "@cucumber/pretty-formatter": "^3.3.1",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^20.19.41",
+    "multiple-cucumber-html-reporter": "^3.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
