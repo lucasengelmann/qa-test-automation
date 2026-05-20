@@ -9,7 +9,7 @@ export class CartPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.cartItems = page.locator('[data-test="cart-item"]');
+        this.cartItems = page.locator('.cart_item');
         this.checkoutButton = page.locator('[data-test="checkout"]');
         this.continueShoppingButton = page.locator('[data-test="continue-shopping"]');
         // CORRIGIDO: pageTitle estava declarada mas nunca inicializada

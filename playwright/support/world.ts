@@ -1,8 +1,10 @@
 import { IWorldOptions, World, setWorldConstructor } from '@cucumber/cucumber';
-import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
+import { Browser, BrowserContext, Page } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { CartPage } from '../pages/CartPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
+import { ProductPage } from '../pages/ProductPage';
 
 export interface ICustomWorld extends World {
     browser: Browser;
@@ -11,6 +13,8 @@ export interface ICustomWorld extends World {
     loginPage: LoginPage;
     inventoryPage: InventoryPage;
     cartPage: CartPage;
+    checkoutPage: CheckoutPage;
+    productPage: ProductPage;
 }
 
 export class CustomWorld extends World implements ICustomWorld {
@@ -20,6 +24,8 @@ export class CustomWorld extends World implements ICustomWorld {
     loginPage!: LoginPage;
     inventoryPage!: InventoryPage;
     cartPage!: CartPage;
+    checkoutPage!: CheckoutPage;
+    productPage!: ProductPage;
 
     constructor(options: IWorldOptions) {
         super(options);

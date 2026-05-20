@@ -1,6 +1,11 @@
 import { Before, After, AfterStep, Status } from '@cucumber/cucumber';
 import { chromium } from '@playwright/test';
 import { ICustomWorld } from './world';
+import { LoginPage } from '../pages/LoginPage';
+import { InventoryPage } from '../pages/InventoryPage';
+import { CartPage } from '../pages/CartPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
+import { ProductPage } from '../pages/ProductPage';
 
 const HEADLESS = process.env.HEADLESS !== 'false';
 
@@ -19,13 +24,13 @@ Before(async function (this: ICustomWorld) {
 
     this.page = await this.context.newPage();
 
-    // Inicializa todas as Page Objects com a mesma instância de page
-    this.loginPage = new (await import('../pages/LoginPage')).LoginPage(this.page);
-    this.inventoryPage = new (await import('../pages/InventoryPage')).InventoryPage(this.page);
-    this.cartPage = new (await import('../pages/CartPage')).CartPage(this.page);
+    this.loginPage = new LoginPage(this.page);
+    this.inventoryPage = new InventoryPage(this.page);
+    this.cartPage = new CartPage(this.page);
+    this.checkoutPage = new CheckoutPage(this.page);
+    this.productPage = new ProductPage(this.page);
 });
 
-// Captura screenshot automaticamente em caso de falha
 AfterStep(async function (this: ICustomWorld, { result }) {
     if (result?.status === Status.FAILED) {
         const screenshot = await this.page.screenshot({ fullPage: true });
@@ -34,7 +39,6 @@ AfterStep(async function (this: ICustomWorld, { result }) {
 });
 
 After(async function (this: ICustomWorld, { result }) {
-    // Captura screenshot final se o cenário falhou
     if (result?.status === Status.FAILED) {
         const screenshot = await this.page.screenshot({ fullPage: true });
         await this.attach(screenshot, 'image/png');
