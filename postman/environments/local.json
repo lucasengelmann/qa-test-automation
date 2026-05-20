@@ -1,0 +1,42 @@
+{
+  "id": "local-environment",
+  "name": "Local",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "https://restful-booker.herokuapp.com",
+      "enabled": true
+    },
+    {
+      "key": "adminUser",
+      "value": "admin",
+      "enabled": true
+    },
+    {
+      "key": "adminPassword",
+      "value": "password123",
+      "enabled": true
+    },
+    {
+      "key": "guestFirstName",
+      "value": "Lucas",
+      "enabled": true
+    },
+    {
+      "key": "guestLastName",
+      "value": "Silva",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "bookingId",
+      "value": "",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}
