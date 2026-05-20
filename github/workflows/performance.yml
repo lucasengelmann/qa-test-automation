@@ -1,0 +1,62 @@
+name: Performance Tests
+
+# Run the performance pipeline on code changes, pull requests, nightly schedule, or manual trigger.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  performance:
+    name: k6 Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # Download the repository source code into the runner.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install the k6 CLI on the GitHub-hosted runner.
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      # Run the k6 smoke scenario and save both the JSON summary and console output.
+      - name: Run k6 smoke suite
+        env:
+          BASE_URL: https://restful-booker.herokuapp.com
+        run: |
+          set -o pipefail
+          mkdir -p performance/reports
+          k6 run \
+            -e BASE_URL="$BASE_URL" \
+            --summary-export performance/reports/k6-smoke-summary.json \
+            performance/scenarios/smoke.js | tee performance/reports/k6-smoke-output.txt
+
+      # Publish k6 output files even when thresholds fail.
+      - name: Upload performance reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-reports
+          path: |
+            performance/reports/k6-smoke-summary.json
+            performance/reports/k6-smoke-output.txt
+          if-no-files-found: warn
+          retention-days: 14
+
+      # Send a failure notification when SLACK_WEBHOOK_URL is configured as a repository secret.
+      - name: Notify failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not configured; skipping failure notification."
+            exit 0
+          fi
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"Performance Tests falhou em ${GITHUB_REPOSITORY}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+            "$SLACK_WEBHOOK_URL"

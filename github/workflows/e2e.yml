@@ -1,0 +1,68 @@
+name: E2E Tests
+
+# Run the E2E pipeline on code changes, pull requests, nightly schedule, or manual trigger.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    name: Playwright + Cucumber
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # Download the repository source code into the runner.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Node.js and enable npm dependency caching.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      # Install dependencies from package-lock.json for reproducible CI runs.
+      - name: Install dependencies
+        run: npm ci
+
+      # Install the Chromium browser and required Linux dependencies for Playwright.
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # Execute the Cucumber E2E suite and generate reports in the reports folder.
+      - name: Run E2E suite
+        run: |
+          mkdir -p reports
+          npm run test:e2e
+
+      # Publish HTML/JSON reports and videos even when the test step fails.
+      - name: Upload E2E reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-reports
+          path: |
+            reports/cucumber-report.html
+            reports/cucumber-report.json
+            reports/videos/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      # Send a failure notification when SLACK_WEBHOOK_URL is configured as a repository secret.
+      - name: Notify failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not configured; skipping failure notification."
+            exit 0
+          fi
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"E2E Tests falhou em ${GITHUB_REPOSITORY}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+            "$SLACK_WEBHOOK_URL"
