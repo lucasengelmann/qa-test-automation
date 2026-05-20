@@ -8,8 +8,8 @@
     "test:smoke": "cucumber-js --profile smoke",
     "test:regression": "cucumber-js --profile regression",
     "test:api": "newman run postman/collections/restful-booker.json -e postman/environments/local.json --reporters cli,htmlextra --reporter-htmlextra-export reports/newman-report.html",
-    "test:performance": "k6 run k6/tests/load-test.js",
-    "test:performance:smoke": "k6 run k6/tests/smoke-test.js",
+    "test:performance": "k6 run performance/scenarios/load.js",
+    "test:performance:smoke": "k6 run performance/scenarios/smoke.js",
     "test:all": "npm run test:api && npm run test:e2e && npm run test:performance",
     "report:open": "open reports/cucumber-report.html || xdg-open reports/cucumber-report.html"
   },

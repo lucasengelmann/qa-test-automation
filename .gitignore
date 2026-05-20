@@ -5,3 +5,10 @@ dist/
 *.env.local
 playwright/videos/
 playwright-report/
+
+# K6 reports
+performance/reports/*.json
+performance/reports/*.html
+
+# mas mantém o .gitkeep
+!performance/reports/.gitkeep
