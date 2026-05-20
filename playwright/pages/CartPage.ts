@@ -12,6 +12,8 @@ export class CartPage {
         this.cartItems = page.locator('[data-test="cart-item"]');
         this.checkoutButton = page.locator('[data-test="checkout"]');
         this.continueShoppingButton = page.locator('[data-test="continue-shopping"]');
+        // CORRIGIDO: pageTitle estava declarada mas nunca inicializada
+        this.pageTitle = page.locator('[data-test="title"]');
     }
 
     async getTitle(): Promise<string> {
@@ -23,10 +25,9 @@ export class CartPage {
     }
 
     async removeItem(itemName: string): Promise<void> {
-        const itemId = itemName.toLowerCase().replace(/\s/g, '-');
-        const removeButton = `[data-test="remove-${itemId}"]`;
-        await this.page.locator(removeButton).click();
-  }
+        const itemId = itemName.toLowerCase().replace(/\s+/g, '-');
+        await this.page.locator(`[data-test="remove-${itemId}"]`).click();
+    }
 
     async proceedToCheckout(): Promise<void> {
         await this.checkoutButton.click();
@@ -34,9 +35,9 @@ export class CartPage {
 
     async continueShopping(): Promise<void> {
         await this.continueShoppingButton.click();
-  }
+    }
 
     async isCartPage(): Promise<boolean> {
-        return await this.page.url().includes('cart.html');
+        return this.page.url().includes('cart.html');
     }
-}       
+}

@@ -2,12 +2,16 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
+    "lib": ["ES2022"],
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "types": ["node"],
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "outDir": "./dist",
+    "rootDir": "."
   },
   "include": ["playwright/**/*.ts"],
-  "exclude": ["node_modules", "reports"]
+  "exclude": ["node_modules", "reports", "dist"]
 }

@@ -10,7 +10,6 @@ Background:
 
 Scenario: Successful login with valid credentials
     When I enter username "standard_user" and password "secret_sauce"
-    And I click on the login button
     Then I should be redirected to the inventory page
     And the page title should be "Products"
 

@@ -1,34 +1,7 @@
-# Dependências
 node_modules/
-package-lock.json
-
-# Relatórios de teste
 reports/
-test-results/
-playwright-report/
-playwright/.cache/
-
-# Logs
-*.log
-npm-debug.log*
-
-# Arquivos de ambiente
-.env
-.env.local
-
-# IDE
-.vscode/
-.idea/
-
-# Sistema operacional
-.DS_Store
-Thumbs.db
-
-# TypeScript compilado
 dist/
-*.js
-!cucumber.js
-!playwright.config.js
-
-# Backup
-*.bak
+.env
+*.env.local
+playwright/videos/
+playwright-report/
